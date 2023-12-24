@@ -1,24 +1,34 @@
-import { AccountTypeModel } from "./models/accountType.model.js";
-import { UserModel } from "./models/user.model.js";
+import { AccountTypes, Permissions } from "@prisma/client";
+import { prisma } from "./db.js";
 
 /**
  * Default Account Types
  */
-const accountTypesCount = await AccountTypeModel.countDocuments();
+const accountTypesCount = await prisma.accountType.count();
 
 if (accountTypesCount === 0) {
   const accTypes = await Promise.all([
-    AccountTypeModel.create({
-      type: "guest",
-      roles: ["guest"],
+    prisma.accountType.create({
+      data: {
+        type: AccountTypes.Guest,
+        permissions: [Permissions.READ],
+      },
     }),
-    AccountTypeModel.create({
-      type: "teacher",
-      roles: ["teacher"],
+    prisma.accountType.create({
+      data: {
+        type: "Teacher",
+        permissions: [
+          Permissions.READ,
+          Permissions.WRITE,
+          Permissions.MANAGE_STUDENTS,
+        ],
+      },
     }),
-    AccountTypeModel.create({
-      type: "director",
-      roles: ["admin", "teacher"],
+    prisma.accountType.create({
+      data: {
+        type: "Director",
+        permissions: [Permissions.ALL],
+      },
     }),
   ]);
 
@@ -31,19 +41,26 @@ if (accountTypesCount === 0) {
  * Default Admin Account
  */
 
-const defaultAccount = await UserModel.findOne({
-  firstName: "Default",
-  lastName: "Account",
-  email: "admin@local.com",
-});
-
-if (!defaultAccount) {
-  const defaultDirectorAccount = await UserModel.create({
+const defaultAccount = await prisma.user.findFirst({
+  where: {
     firstName: "Default",
     lastName: "Account",
     email: "admin@local.com",
-    password: "admin1234",
-    accountType: (await AccountTypeModel.findOne({ type: "director" }))?._id,
+  },
+});
+
+if (!defaultAccount) {
+  const defaultAccountType = await prisma.accountType.findFirst({
+    where: { type: "Director" },
+  });
+  const defaultDirectorAccount = await prisma.user.create({
+    data: {
+      firstName: "Default",
+      lastName: "Account",
+      email: "admin@local.com",
+      password: "admin1234",
+      accountTypeId: defaultAccountType?.id!,
+    },
   });
 
   console.log(`Default admin account created: ${defaultDirectorAccount.email}`);

@@ -1,5 +1,5 @@
+import { prisma } from "../db.js";
 import { vrb } from "../middlewares/vrb.js";
-import { GradeModel } from "../models/grade.model.js";
 import { Handler } from "../utils/handler.js";
 import {
   CreateGradeBody,
@@ -10,7 +10,7 @@ import {
 
 export const getAllGrades = Handler(async (req, res) => {
   try {
-    const grades = await GradeModel.find();
+    const grades = await prisma.grade.findMany();
 
     res.json(grades);
   } catch (e) {
@@ -24,7 +24,7 @@ export const getGradeById = Handler(async (req, res) => {
   const { id } = req.params;
 
   try {
-    const grade = await GradeModel.findById(id);
+    const grade = await prisma.grade.findUnique({ where: { id } });
 
     res.json(grade);
   } catch (e) {
@@ -40,7 +40,7 @@ export const createGrade = Handler(
     const gradeData: CreateGradeBody = req.body;
 
     try {
-      const grade = await GradeModel.create(gradeData);
+      const grade = await prisma.grade.create({ data: gradeData });
 
       res.json(grade);
     } catch (e) {
@@ -58,7 +58,12 @@ export const updateGrade = Handler(
     const gradeData: UpdateGradeBody = req.body;
 
     try {
-      const grade = await GradeModel.findByIdAndUpdate(id, gradeData);
+      const grade = await prisma.grade.update({
+        where: {
+          id,
+        },
+        data: gradeData,
+      });
 
       res.json(grade);
     } catch (e) {
@@ -73,7 +78,11 @@ export const deleteGrade = Handler(async (req, res) => {
   const { id } = req.params;
 
   try {
-    const grade = await GradeModel.findByIdAndDelete(id);
+    const grade = await prisma.grade.delete({
+      where: {
+        id,
+      },
+    });
 
     res.json(grade);
   } catch (e) {

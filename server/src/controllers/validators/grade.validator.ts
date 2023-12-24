@@ -1,18 +1,19 @@
+import { Levels } from "@prisma/client";
 import Joi from "joi";
 
 export interface CreateGradeBody {
-  grade: string;
-  level: number;
+  discriminator: number;
+  level: Levels;
 }
 
 export const createGradeBody = Joi.object<CreateGradeBody>({
-  grade: Joi.string().required(),
-  level: Joi.number().integer().required(),
+  discriminator: Joi.number().integer().required(),
+  level: Joi.string().required(),
 });
 
 export type UpdateGradeBody = Partial<CreateGradeBody>;
 
 export const updateGradeBody = Joi.object<UpdateGradeBody>({
-  grade: Joi.string(),
-  level: Joi.number().integer(),
+  discriminator: Joi.number().integer(),
+  level: Joi.string(),
 });

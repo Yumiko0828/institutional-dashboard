@@ -1,7 +1,5 @@
-import { JWT_ACCESS_EXPIRED, JWT_REFRESH_EXPIRED } from "../config.js";
+import { prisma } from "../db.js";
 import { vrb } from "../middlewares/vrb.js";
-import { UserModel } from "../models/user.model.js";
-import { expireTime } from "../utils/expireTime.js";
 import { Handler } from "../utils/handler.js";
 import { signAsync, verifyAsync } from "../utils/jwt.js";
 import {
@@ -10,34 +8,28 @@ import {
   refreshBody,
   signinBody,
 } from "./validators/auth.validator.js";
+import { compare } from "bcrypt";
 
 export const signIn = Handler(...vrb(signinBody), async (req, res) => {
   const { email, password }: SigninBody = req.body;
 
-  const user = await UserModel.findOne({
-    email,
+  const user = await prisma.user.findFirst({
+    where: {
+      email,
+    },
   });
 
   if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-  const validPass = await user.comparePass(password);
+  const validPass = await compare(password, user.password);
 
   if (!validPass)
     return res.status(400).json({ message: "Invalid credentials" });
 
   const [access_token, refresh_token] = await Promise.all([
-    signAsync({ userId: user._id.toString() }, "access"),
-    signAsync({ userId: user._id.toString() }, "refresh"),
+    signAsync({ userId: user.id }, "access"),
+    signAsync({ userId: user.id }, "refresh"),
   ]);
-
-  res.cookie("access_token", access_token, {
-    httpOnly: true,
-    expires: expireTime(JWT_ACCESS_EXPIRED),
-  });
-  res.cookie("refresh_token", refresh_token, {
-    httpOnly: false,
-    expires: expireTime(JWT_REFRESH_EXPIRED),
-  });
 
   res.json({
     access_token,
@@ -50,7 +42,7 @@ export const refresh = Handler(...vrb(refreshBody), async (req, res) => {
 
   try {
     const { userId } = await verifyAsync(refreshToken, "refresh");
-    const user = await UserModel.findById(userId);
+    const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!user)
       return res.status(400).json({
@@ -61,15 +53,6 @@ export const refresh = Handler(...vrb(refreshBody), async (req, res) => {
       signAsync({ userId }, "access"),
       signAsync({ userId }, "refresh"),
     ]);
-
-    res.cookie("access_token", access_token, {
-      httpOnly: true,
-      expires: expireTime(JWT_ACCESS_EXPIRED),
-    });
-    res.cookie("refresh_token", refresh_token, {
-      httpOnly: false,
-      expires: expireTime(JWT_REFRESH_EXPIRED),
-    });
 
     res.json({
       access_token,

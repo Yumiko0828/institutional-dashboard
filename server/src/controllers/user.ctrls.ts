@@ -1,5 +1,5 @@
+import { prisma } from "../db.js";
 import { vrb } from "../middlewares/vrb.js";
-import { UserModel } from "../models/user.model.js";
 import { Handler } from "../utils/handler.js";
 import {
   RegisterUserBody,
@@ -12,12 +12,21 @@ export const getProfile = Handler(async (req, res) => {
   const userId = req.user!;
 
   try {
-    const user = await UserModel.findById(userId, {
-      password: 0,
-      comparePass: 0,
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        password: false,
+        accountTypeId: true,
+      },
     });
 
-    res.json(user?.toJSON());
+    res.json(user);
   } catch (e) {
     res.status(400).json({
       message: e.message,
@@ -32,17 +41,19 @@ export const registerUser = Handler(
       firstName,
       lastName,
       email,
-      accountType,
+      accountTypeId,
       password,
     }: RegisterUserBody = req.body;
 
     try {
-      const user = await UserModel.create({
-        firstName,
-        lastName,
-        email,
-        password,
-        accountType,
+      const user = await prisma.user.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password,
+          accountTypeId,
+        },
       });
 
       res.json(user);
@@ -59,7 +70,12 @@ export const updateUser = Handler(...vrb(updateUserBody), async (req, res) => {
   const body: UpdateUserBody = req.body;
 
   try {
-    const updatedUser = await UserModel.findByIdAndUpdate(userId, body);
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: body,
+    });
 
     res.json(updatedUser);
   } catch (e) {
@@ -73,7 +89,7 @@ export const deleteUser = Handler(async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await UserModel.findByIdAndDelete(userId);
+    const user = await prisma.user.delete({ where: { id: userId } });
 
     res.json(user);
   } catch (e) {

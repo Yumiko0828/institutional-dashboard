@@ -6,7 +6,7 @@ export interface RegisterUserBody {
   lastName: string;
   email: string;
   password: string;
-  accountType: string;
+  accountTypeId: string;
 }
 
 export const registerUserBody = Joi.object<RegisterUserBody>({
@@ -14,7 +14,7 @@ export const registerUserBody = Joi.object<RegisterUserBody>({
   lastName: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  accountType: Joi.string().required(),
+  accountTypeId: Joi.string().required(),
 });
 
 // Update a user
@@ -24,5 +24,5 @@ export const updateUserBody = Joi.object<UpdateUserBody>({
   firstName: Joi.string(),
   lastName: Joi.string(),
   email: Joi.string().email(),
-  accountType: Joi.string(),
+  accountTypeId: Joi.string(),
 });

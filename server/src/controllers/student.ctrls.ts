@@ -1,5 +1,5 @@
+import { prisma } from "../db.js";
 import { vrb } from "../middlewares/vrb.js";
-import { StudentModel } from "../models/student.model.js";
 import { Handler } from "../utils/handler.js";
 import {
   CreateStudentBody,
@@ -10,7 +10,7 @@ import {
 
 export const getAllStudents = Handler(async (req, res) => {
   try {
-    const users = await StudentModel.find();
+    const users = await prisma.student.findMany();
 
     res.json(users);
   } catch (e) {
@@ -24,7 +24,7 @@ export const getStudentById = Handler(async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await StudentModel.findById(id);
+    const user = await prisma.student.findUnique({ where: { id } });
 
     res.json(user);
   } catch (e) {
@@ -40,7 +40,7 @@ export const createStudent = Handler(
     const studentData: CreateStudentBody = req.body;
 
     try {
-      const student = await StudentModel.create(studentData);
+      const student = await prisma.student.create({ data: studentData });
 
       res.json(student);
     } catch (e) {
@@ -58,7 +58,12 @@ export const updateStudent = Handler(
     const studentData: UpdateStudentBody = req.body;
 
     try {
-      const student = await StudentModel.findByIdAndUpdate(id, studentData);
+      const student = await prisma.student.update({
+        where: {
+          id,
+        },
+        data: studentData,
+      });
 
       res.json(student);
     } catch (e) {
@@ -73,7 +78,11 @@ export const deleteStudent = Handler(async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await StudentModel.findByIdAndDelete(id);
+    const user = await prisma.student.delete({
+      where: {
+        id,
+      },
+    });
 
     res.json(user);
   } catch (e) {
