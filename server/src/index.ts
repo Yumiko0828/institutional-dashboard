@@ -1,17 +1,16 @@
 import express from "express";
 import morgan from "morgan";
-import { Types } from "mongoose";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
-import { authRouter } from "./routes/auth.routes.js";
-import { userRouter } from "./routes/user.routes.js";
-import { studentRouter } from "./routes/student.routes.js";
-import { assistanceRouter } from "./routes/assistance.routes.js";
-import { edaRouter } from "./routes/eda.routes.js";
-import { gradeRouter } from "./routes/grade.routes.js";
-import { sectionRouter } from "./routes/section.routes.js";
 import { prisma } from "./db.js";
+import { authRouter } from "./routes/Auth/index.routes.js";
+import { userRouter } from "./routes/Users/index.routes.js";
+import { studentRouter } from "./routes/Students/index.routes.js";
+import { assistanceRouter } from "./routes/Assistances/index.routes.js";
+import { edaRouter } from "./routes/EDA/index.routes.js";
+import { gradeRouter } from "./routes/Grades/index.routes.js";
+import { sectionRouter } from "./routes/Sections/index.routes.js";
 
 await prisma.$connect();
 await import("./setup.js");
@@ -25,8 +24,9 @@ declare global {
   namespace Express {
     interface Request {
       user?: string;
+      /* Changes this: */
       userType?: {
-        _id: Types.ObjectId;
+        id: string;
         type: string;
         roles: string[];
       };

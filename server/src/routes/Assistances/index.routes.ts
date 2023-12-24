@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { isAuth } from "../middlewares/isAuth.js";
-import { onlyRoles } from "../middlewares/onlyRoles.js";
+import { isAuth } from "../../middlewares/isAuth.js";
+import { onlyRoles } from "../../middlewares/onlyRoles.js";
 const assistance = Router();
 
 // Get all assistances
