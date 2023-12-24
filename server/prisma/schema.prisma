@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Levels {
+  Primary
+  Secundary
+}
+
+enum AssistanceTypes {
+  Punctual
+  Late
+  Lack
+}
+
+enum Permissions {
+  READ
+  WRITE
+  MANAGE_STUDENTS
+  MANAGE_GRADES
+  ALL
+}
+
+model User {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  firstName     String @unique
+  lastName      String @unique
+  email         String @unique
+  accountTypeId String @db.ObjectId
+  password      String
+
+  accountType AccountType @relation(fields: [accountTypeId], references: [id])
+}
+
+enum AccountTypes {
+  Guest
+  Teacher
+  Director
+}
+
+model AccountType {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  type        AccountTypes
+  permissions Permissions[]
+
+  user User[]
+}
+
+model Student {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String
+  lastName  String
+  sectionId String @db.ObjectId
+
+  section         Section           @relation(fields: [sectionId], references: [id])
+  assitanceRecord AssitanceRecord[]
+}
+
+model Section {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  gradeId String @db.ObjectId
+
+  grade    Grade     @relation(fields: [gradeId], references: [id])
+  students Student[]
+}
+
+model Grade {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  discriminator Int
+  level         Levels
+
+  section Section[]
+}
+
+model EDA {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  number    Int
+  startDate DateTime
+  endDate   DateTime
+  holydays  DateTime[]
+  assitance Assitance[]
+}
+
+model Assitance {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  edaId     String @db.ObjectId
+  sectionId String @db.ObjectId
+
+  record AssitanceRecord[]
+  eda    EDA               @relation(fields: [edaId], references: [id])
+}
+
+model AssitanceRecord {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  studentId      String          @db.ObjectId
+  day            DateTime
+  assitanceId    String          @db.ObjectId
+  assistanceType AssistanceTypes
+
+  student   Student   @relation(fields: [studentId], references: [id])
+  assitance Assitance @relation(fields: [assitanceId], references: [id])
+}
