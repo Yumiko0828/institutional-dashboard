@@ -22,11 +22,20 @@ enum AssistanceTypes {
 }
 
 enum Permissions {
-  READ
-  WRITE
   MANAGE_STUDENTS
   MANAGE_GRADES
+  MANAGE_ASSISTANCE
+  MANAGE_EDA
+  MANAGE_USERS
+  MANAGE_SECTIONS
+  GUEST
   ALL
+}
+
+enum AccountTypes {
+  Guest
+  Teacher
+  Director
 }
 
 model User {
@@ -38,12 +47,6 @@ model User {
   password      String
 
   accountType AccountType @relation(fields: [accountTypeId], references: [id])
-}
-
-enum AccountTypes {
-  Guest
-  Teacher
-  Director
 }
 
 model AccountType {

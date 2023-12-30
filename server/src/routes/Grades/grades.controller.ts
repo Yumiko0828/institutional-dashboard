@@ -1,24 +1,23 @@
-import { Request, Response } from "express";
-import { prisma } from "../../db.js";
+import { NextFunction, Request, Response } from "express";
+import { badImplementation } from "@hapi/boom";
 import {
   CreateGradeBody,
   UpdateGradeBody,
 } from "../../validators/grade.validator.js";
+import { prisma } from "../../db.js";
 
 export class GradesController {
-  async getAll(req: Request, res: Response) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const grades = await prisma.grade.findMany();
 
       res.json(grades);
     } catch (e) {
-      res.status(400).json({
-        message: e.message,
-      });
+      next(badImplementation(e.message));
     }
   }
 
-  async getById(req: Request, res: Response) {
+  async getById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
@@ -26,13 +25,11 @@ export class GradesController {
 
       res.json(grade);
     } catch (e) {
-      res.status(400).json({
-        message: e.message,
-      });
+      next(badImplementation(e.message));
     }
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next: NextFunction) {
     const gradeData: CreateGradeBody = req.body;
 
     try {
@@ -40,13 +37,11 @@ export class GradesController {
 
       res.json(grade);
     } catch (e) {
-      res.status(400).json({
-        message: e.message,
-      });
+      next(badImplementation(e.message));
     }
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const gradeData: UpdateGradeBody = req.body;
 
@@ -60,13 +55,11 @@ export class GradesController {
 
       res.json(grade);
     } catch (e) {
-      res.status(400).json({
-        message: e.message,
-      });
+      next(badImplementation(e.message));
     }
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
@@ -78,9 +71,7 @@ export class GradesController {
 
       res.json(grade);
     } catch (e) {
-      res.status(400).json({
-        message: e.message,
-      });
+      next(badImplementation(e.message));
     }
   }
 }

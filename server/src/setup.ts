@@ -11,16 +11,15 @@ if (accountTypesCount === 0) {
     prisma.accountType.create({
       data: {
         type: AccountTypes.Guest,
-        permissions: [Permissions.READ],
+        permissions: [Permissions.GUEST],
       },
     }),
     prisma.accountType.create({
       data: {
         type: "Teacher",
         permissions: [
-          Permissions.READ,
-          Permissions.WRITE,
           Permissions.MANAGE_STUDENTS,
+          Permissions.MANAGE_ASSISTANCE,
         ],
       },
     }),

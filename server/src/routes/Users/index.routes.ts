@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isAuth } from "../../middlewares/isAuth.js";
-import { onlyRoles } from "../../middlewares/onlyRoles.js";
+import { withPerms } from "../../middlewares/withPerms.js";
 import { UsersController } from "./users.controller.js";
 import { validateHandler } from "../../utils/validateHandler.js";
 import {
@@ -25,7 +25,7 @@ user.get("/profile", isAuth, controller.profile);
 user.post(
   "/register",
   isAuth,
-  onlyRoles("admin"),
+  withPerms("MANAGE_USERS"),
   validateHandler("body", registerUserBody),
   controller.register
 );
@@ -34,12 +34,17 @@ user.post(
 user.put(
   "/update/:userId",
   isAuth,
-  onlyRoles("admin"),
+  withPerms("MANAGE_USERS"),
   validateHandler("body", updateUserBody),
   controller.update
 );
 
 // Delete a user
-user.delete("/delete/:userId", isAuth, onlyRoles("admin"), controller.delete);
+user.delete(
+  "/delete/:userId",
+  isAuth,
+  withPerms("MANAGE_USERS"),
+  controller.delete
+);
 
 export { user as userRouter };

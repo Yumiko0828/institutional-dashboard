@@ -11,6 +11,9 @@ import { assistanceRouter } from "./routes/Assistances/index.routes.js";
 import { edaRouter } from "./routes/EDA/index.routes.js";
 import { gradeRouter } from "./routes/Grades/index.routes.js";
 import { sectionRouter } from "./routes/Sections/index.routes.js";
+import { AccountType } from "@prisma/client";
+import { errorHandler } from "./middlewares/errorHandler.js";
+import { notFound } from "@hapi/boom";
 
 await prisma.$connect();
 await import("./setup.js");
@@ -25,11 +28,7 @@ declare global {
     interface Request {
       user?: string;
       /* Changes this: */
-      userType?: {
-        id: string;
-        type: string;
-        roles: string[];
-      };
+      userType?: AccountType;
       io: Server;
     }
   }
@@ -47,7 +46,7 @@ app.use(
     origin: ["*"],
   })
 );
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   req.io = io;
 
   next();
@@ -61,6 +60,10 @@ app.use("/api/assistance", assistanceRouter);
 app.use("/api/eda", edaRouter);
 app.use("/api/grade", gradeRouter);
 app.use("/api/section", sectionRouter);
+app.use("/*", (req, res, next) => {
+  next(notFound("Not found"));
+});
+app.use(errorHandler);
 
 // Start server
 app.listen(app.get("port"), () => {

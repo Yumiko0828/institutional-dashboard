@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isAuth } from "../../middlewares/isAuth.js";
-import { onlyRoles } from "../../middlewares/onlyRoles.js";
+import { withPerms } from "../../middlewares/withPerms.js";
 import { GradesController } from "./grades.controller.js";
 import { validateHandler } from "../../utils/validateHandler.js";
 import {
@@ -21,7 +21,7 @@ grade.get("/:id", isAuth, controller.getById);
 grade.post(
   "/register",
   isAuth,
-  onlyRoles("admin"),
+  withPerms("MANAGE_GRADES"),
   validateHandler("body", createGradeBody),
   controller.create
 );
@@ -30,12 +30,17 @@ grade.post(
 grade.put(
   "/update/:id",
   isAuth,
-  onlyRoles("admin"),
+  withPerms("MANAGE_GRADES"),
   validateHandler("body", updateGradeBody),
   controller.update
 );
 
 // Delete a grade
-grade.delete("/delete/:id", isAuth, onlyRoles("admin"), controller.delete);
+grade.delete(
+  "/delete/:id",
+  isAuth,
+  withPerms("MANAGE_GRADES"),
+  controller.delete
+);
 
 export { grade as gradeRouter };

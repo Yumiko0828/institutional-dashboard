@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isAuth } from "../../middlewares/isAuth.js";
-import { onlyRoles } from "../../middlewares/onlyRoles.js";
+import { withPerms } from "../../middlewares/withPerms.js";
 import { StudentsController } from "./students.controller.js";
 import { validateHandler } from "../../utils/validateHandler.js";
 import {
@@ -21,7 +21,7 @@ student.get("/:id", isAuth, controller.getById);
 student.post(
   "/register",
   isAuth,
-  onlyRoles("admin", "teacher"),
+  withPerms("MANAGE_STUDENTS"),
   validateHandler("body", createStudentBody),
   controller.create
 );
@@ -30,7 +30,7 @@ student.post(
 student.put(
   "/update/:id",
   isAuth,
-  onlyRoles("admin", "teacher"),
+  withPerms("MANAGE_STUDENTS"),
   validateHandler("body", updateStudentBody),
   controller.update
 );
@@ -39,7 +39,7 @@ student.put(
 student.delete(
   "/delete/:id",
   isAuth,
-  onlyRoles("admin", "teacher"),
+  withPerms("MANAGE_STUDENTS"),
   controller.delete
 );
 

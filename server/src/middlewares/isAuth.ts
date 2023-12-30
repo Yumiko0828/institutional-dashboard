@@ -1,37 +1,30 @@
-import { isDocument } from "@typegoose/typegoose";
-import { UserModel } from "../models/user.model.js";
-import { Handler } from "../utils/handler.js";
+import { NextFunction, Request, Response } from "express";
+import { unauthorized } from "@hapi/boom";
 import { verifyAsync } from "../utils/jwt.js";
+import { prisma } from "../db.js";
 
-export const isAuth = Handler((req, res, next) => {
+export function isAuth(req: Request, _res: Response, next: NextFunction) {
   const token: string | undefined = req.headers.authorization;
 
   if (!token || !/[Bb]earer /.test(token.slice(0, 7)))
-    return res.status(401).json({
-      message: "Unauthorized",
-    });
+    return next(unauthorized("Invalid auth header"));
 
   return verifyAsync(token.slice(7), "access")
-    .then(({ userId }) => UserModel.findById(userId).populate("accountType"))
+    .then(({ userId }) =>
+      prisma.user.findUnique({
+        where: { id: userId },
+        include: { accountType: true },
+      })
+    )
     .then((user) => {
-      if (!user)
-        return res.status(401).json({
-          message: "Unknown user",
-        });
+      if (!user) return next(unauthorized("Unknown user"));
 
-      req.user = user._id.toString();
-
-      if (isDocument(user.accountType)) {
-        req.userType = user.accountType.toJSON();
-      }
+      req.user = user.id;
+      req.userType = user.accountType;
 
       return next();
     })
     .catch((e) => {
-      console.error(e);
-
-      res.status(401).json({
-        message: "Invalid token",
-      });
+      next(unauthorized(e.message));
     });
-});
+}

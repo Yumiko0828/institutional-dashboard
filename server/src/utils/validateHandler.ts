@@ -1,3 +1,4 @@
+import { badRequest } from "@hapi/boom";
 import { NextFunction, Request, Response } from "express";
 import { ObjectSchema } from "joi";
 
@@ -7,9 +8,7 @@ export function validateHandler(property: keyof Request, schema: ObjectSchema) {
       await schema.validateAsync(req[property]);
       next();
     } catch (e) {
-      res.status(400).json({
-        error: e.message,
-      });
+      next(badRequest(e.message));
     }
   };
 }
