@@ -70,6 +70,7 @@ model Student {
 model Section {
   id      String @id @default(auto()) @map("_id") @db.ObjectId
   gradeId String @db.ObjectId
+  section String
 
   grade    Grade     @relation(fields: [gradeId], references: [id])
   students Student[]
