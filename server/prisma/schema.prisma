@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,105 +7,71 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Levels {
-  Primary
-  Secundary
-}
-
-enum AssistanceTypes {
-  Punctual
-  Late
-  Lack
-}
-
-enum Permissions {
-  MANAGE_STUDENTS
-  MANAGE_GRADES
-  MANAGE_ASSISTANCE
-  MANAGE_EDA
-  MANAGE_USERS
-  MANAGE_SECTIONS
-  GUEST
-  ALL
-}
-
-enum AccountTypes {
+enum UserType {
   Guest
   Teacher
-  Director
+  Admin
 }
 
 model User {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  firstName     String @unique
-  lastName      String @unique
-  email         String @unique
-  accountTypeId String @db.ObjectId
-  password      String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  email     String   @unique
+  type      UserType @default(Guest)
+  password  String
 
-  accountType AccountType @relation(fields: [accountTypeId], references: [id])
-}
-
-model AccountType {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  type        AccountTypes
-  permissions Permissions[]
-
-  user User[]
+  @@unique(name: "fullName", [firstName, lastName])
 }
 
 model Student {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  firstName String
-  lastName  String
-  sectionId String @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  gradeId   String   @map("grade_id") @db.ObjectId
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  section         Section           @relation(fields: [sectionId], references: [id])
-  assitanceRecord AssitanceRecord[]
-}
+  grade Grade @relation(fields: [gradeId], references: [id])
 
-model Section {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  gradeId String @db.ObjectId
-  section String
-
-  grade    Grade     @relation(fields: [gradeId], references: [id])
-  students Student[]
+  @@unique(name: "fullName", [firstName, lastName])
 }
 
 model Grade {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  discriminator Int
-  level         Levels
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  year    Int
+  section String
+  levelId String @map("level_id") @db.ObjectId
 
-  section Section[]
+  level      Level        @relation(fields: [levelId], references: [id])
+  student    Student[]
+  assistance Assistance[]
+
+  @@unique([year, section, levelId])
 }
 
-model EDA {
-  id        String      @id @default(auto()) @map("_id") @db.ObjectId
-  number    Int
-  startDate DateTime
-  endDate   DateTime
-  holydays  DateTime[]
-  assitance Assitance[]
+model Level {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+
+  grade Grade[]
 }
 
-model Assitance {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  edaId     String @db.ObjectId
-  sectionId String @db.ObjectId
+model Eda {
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  number   Int
+  start    DateTime
+  end      DateTime
+  holydays DateTime[]
 
-  record AssitanceRecord[]
-  eda    EDA               @relation(fields: [edaId], references: [id])
+  assistance Assistance[]
 }
 
-model AssitanceRecord {
-  id             String          @id @default(auto()) @map("_id") @db.ObjectId
-  studentId      String          @db.ObjectId
-  day            DateTime
-  assitanceId    String          @db.ObjectId
-  assistanceType AssistanceTypes
+model Assistance {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  edaId   String @map("eda_id") @db.ObjectId
+  gradeId String @map("grade_id") @db.ObjectId
 
-  student   Student   @relation(fields: [studentId], references: [id])
-  assitance Assitance @relation(fields: [assitanceId], references: [id])
+  eda   Eda   @relation(fields: [edaId], references: [id])
+  grade Grade @relation(fields: [gradeId], references: [id])
 }
