@@ -3,75 +3,66 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-enum UserType {
-  Guest
-  Teacher
-  Admin
-}
-
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  firstName String   @map("first_name")
-  lastName  String   @map("last_name")
-  email     String   @unique
-  type      UserType @default(Guest)
-  password  String
+  id               String       @id @default(uuid())
+  firstName        String       @map("first_name")
+  lastName         String       @map("last_name")
+  email            String       @unique
+  permissionsLevel Int          @default(0)
+  password         String
+  presentsIn       Assistance[] @relation("presents")
+  latesIn          Assistance[] @relation("lates")
+  absencesIn       Assistance[] @relation("absences")
 
   @@unique(name: "fullName", [firstName, lastName])
 }
 
 model Student {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   firstName String   @map("first_name")
   lastName  String   @map("last_name")
-  gradeId   String   @map("grade_id") @db.ObjectId
+  gradeId   String   @map("grade_id")
+  grade     Grade    @relation(fields: [gradeId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  grade Grade @relation(fields: [gradeId], references: [id])
 
   @@unique(name: "fullName", [firstName, lastName])
 }
 
 model Grade {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  year    Int
-  section String
-  levelId String @map("level_id") @db.ObjectId
+  id              String        @id @default(uuid())
+  label           Int
+  section         String
+  academicLevelId String        @map("academic_level_id")
+  academicLevel   AcademicLevel @relation(fields: [academicLevelId], references: [id])
+  Student         Student[]
 
-  level      Level        @relation(fields: [levelId], references: [id])
-  student    Student[]
-  assistance Assistance[]
-
-  @@unique([year, section, levelId])
+  @@unique(name: "uniqueGrade", [label, section, academicLevelId])
 }
 
-model Level {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-
-  grade Grade[]
-}
-
-model Eda {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  number   Int
-  start    DateTime
-  end      DateTime
-  holydays DateTime[]
-
-  assistance Assistance[]
+model AcademicLevel {
+  id     String  @id @default(uuid())
+  name   String  @unique
+  grades Grade[]
 }
 
 model Assistance {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  edaId   String @map("eda_id") @db.ObjectId
-  gradeId String @map("grade_id") @db.ObjectId
+  id         String   @id @default(uuid())
+  date       DateTime @default(now())
+  scheduleId String   @unique
+  presents   User[]   @relation("presents")
+  lates      User[]   @relation("lates")
+  absences   User[]   @relation("absences")
+  Schedule   Schedule @relation(fields: [scheduleId], references: [id])
+}
 
-  eda   Eda   @relation(fields: [edaId], references: [id])
-  grade Grade @relation(fields: [gradeId], references: [id])
+model Schedule {
+  id          String       @id @default(uuid())
+  gradeId     String       @map("grade_id")
+  lea         Int          @unique
+  assistances Assistance[]
 }

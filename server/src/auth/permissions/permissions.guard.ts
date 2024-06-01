@@ -5,39 +5,35 @@ import {
   Injectable,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { ROLES_KEY } from "./userType.decorator";
-import { UserType } from "@prisma/client";
+import { Observable } from "rxjs";
 import { PrismaService } from "src/prisma/prisma.service";
+import { PERMS_KEY, PermsLevel } from "./permissions.decorator";
 
 @Injectable()
-export class UserTypeGuard implements CanActivate {
+export class PermissionsGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private readonly prisma: PrismaService,
   ) {}
 
-  async canActivate(ctx: ExecutionContext) {
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const { userId } = ctx.switchToHttp().getRequest();
 
     if (!userId) throw new BadRequestException("Missing user id");
 
-    const userTypes = this.reflector.getAllAndOverride<UserType[]>(ROLES_KEY, [
+    const perms = this.reflector.getAllAndOverride<PermsLevel>(PERMS_KEY, [
       ctx.getHandler(),
       ctx.getClass(),
     ]);
 
-    if (!userTypes) return true;
+    if (!perms) return true;
 
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        type: true,
-        id: true,
-      },
     });
 
     if (!user) throw new BadRequestException("Invalid user id");
 
-    return userTypes.some((t) => t === user.type);
+    return user.permissionsLevel >= perms;
   }
 }

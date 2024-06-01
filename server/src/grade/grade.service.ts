@@ -7,50 +7,39 @@ import { UpdateGradeDto } from "./dto/update.dto";
 export class GradeService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getAll() {
+  async retrieve() {
     return this.prisma.grade.findMany({
       orderBy: {
-        year: "desc",
-        section: "asc",
+        label: "desc",
       },
       select: {
         id: true,
-        year: true,
+        label: true,
         section: true,
-        level: true,
+        academicLevel: true,
       },
     });
   }
 
-  getById(id: string) {
+  retrieveOne(id: string) {
     return this.prisma.grade.findUnique({
       where: { id },
       select: {
         id: true,
-        year: true,
+        label: true,
         section: true,
-        level: true,
-        student: {
-          orderBy: {
-            lastName: "desc",
-          },
-        },
-        _count: {
-          select: {
-            student: true,
-          },
-        },
+        academicLevel: true,
       },
     });
   }
 
-  async create({ year, levelId, section }: CreateGradeDto) {
+  async create({ label, academicLevelId, section }: CreateGradeDto) {
     const existGrade = await this.prisma.grade.findUnique({
       where: {
-        year_section_levelId: {
-          year,
+        uniqueGrade: {
+          label,
           section,
-          levelId,
+          academicLevelId,
         },
       },
       select: {
@@ -64,35 +53,39 @@ export class GradeService {
     return this.prisma.grade.create({
       data: {
         section,
-        year,
-        levelId,
+        label,
+        academicLevelId,
       },
       select: {
         id: true,
-        year: true,
+        label: true,
         section: true,
-        level: true,
+        academicLevel: true,
       },
     });
   }
 
-  async update(id: string, { year, levelId, section }: UpdateGradeDto) {
+  async update(
+    id: string,
+    { label, academicLevelId, section }: UpdateGradeDto,
+  ) {
     const grade = await this.prisma.grade.findUnique({
       where: { id },
     });
 
     if (!grade) throw new BadRequestException("Invalid id");
 
-    if (year && year === grade.year) year = undefined;
+    if (label && label === grade.label) label = undefined;
     if (section && section === grade.section) section = undefined;
-    if (levelId && levelId === grade.levelId) levelId = undefined;
+    if (academicLevelId && academicLevelId === grade.academicLevelId)
+      academicLevelId = undefined;
 
-    if (!year && !section && !levelId)
+    if (!label && !section && !academicLevelId)
       throw new BadRequestException("Invalid data");
 
-    if (levelId) {
-      const existLevel = await this.prisma.level.findUnique({
-        where: { id: levelId },
+    if (academicLevelId) {
+      const existLevel = await this.prisma.academicLevel.findUnique({
+        where: { id: academicLevelId },
       });
 
       if (!existLevel) throw new BadRequestException("Invalid level id");
@@ -103,15 +96,15 @@ export class GradeService {
         id: grade.id,
       },
       data: {
-        levelId,
+        academicLevelId,
         section,
-        year,
+        label,
       },
       select: {
         id: true,
-        year: true,
+        label: true,
         section: true,
-        level: true,
+        academicLevel: true,
       },
     });
   }
@@ -128,6 +121,9 @@ export class GradeService {
 
     return this.prisma.grade.delete({
       where: { id: grade.id },
+      select: {
+        id: true,
+      },
     });
   }
 }

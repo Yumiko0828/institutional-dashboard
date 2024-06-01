@@ -57,8 +57,14 @@ export class AuthService {
       this.config.get<JwtConfig>("JWT")!;
 
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwt.signAsync({ userId }, { secret: ACCESS_SECRET }),
-      this.jwt.signAsync({ userId }, { secret: REFRESH_SECRET }),
+      this.jwt.signAsync(
+        { userId },
+        { secret: ACCESS_SECRET, expiresIn: 15 * 60 /* 15 minutes */ },
+      ),
+      this.jwt.signAsync(
+        { userId },
+        { secret: REFRESH_SECRET, expiresIn: 60 * 60 /* 1 hour */ },
+      ),
     ]);
 
     return {

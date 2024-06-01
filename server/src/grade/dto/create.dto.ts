@@ -3,7 +3,7 @@ import { IsInt, IsNotEmpty, IsString } from "class-validator";
 export class CreateGradeDto {
   @IsInt()
   @IsNotEmpty()
-  year: number;
+  label: number;
 
   @IsString()
   @IsNotEmpty()
@@ -11,5 +11,5 @@ export class CreateGradeDto {
 
   @IsString()
   @IsNotEmpty()
-  levelId: string;
+  academicLevelId: string;
 }

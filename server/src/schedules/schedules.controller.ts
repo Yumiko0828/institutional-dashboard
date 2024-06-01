@@ -7,34 +7,34 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { UsersService } from "./users.service";
+import { SchedulesService } from "./schedules.service";
 import { AuthGuard } from "src/auth/auth.guard";
 import { PermissionsGuard } from "src/auth/permissions/permissions.guard";
 import {
   Permissions,
   PermsLevel,
 } from "src/auth/permissions/permissions.decorator";
-import { CreateUserDto } from "./dto/create.dto";
+import { CreateScheduleDto } from "./dto/create.dto";
 
-@Controller("users")
+@Controller("schedules")
 @UseGuards(AuthGuard, PermissionsGuard)
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class SchedulesController {
+  constructor(private readonly schedulesService: SchedulesService) {}
 
   @Get()
   getAll() {
-    return this.usersService.getAll();
+    return this.schedulesService.retrieve();
   }
 
   @Post()
   @Permissions(PermsLevel.Admin)
-  create(@Body() data: CreateUserDto) {
-    return this.usersService.create(data);
+  create(@Body() data: CreateScheduleDto) {
+    return this.schedulesService.create(data);
   }
 
   @Delete("/:id")
   @Permissions(PermsLevel.Admin)
   delete(@Param("id") id: string) {
-    return this.usersService.delete(id);
+    return this.schedulesService.delete(id);
   }
 }

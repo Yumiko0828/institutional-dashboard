@@ -7,34 +7,34 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { UsersService } from "./users.service";
+import { AlService } from "./al.service";
 import { AuthGuard } from "src/auth/auth.guard";
 import { PermissionsGuard } from "src/auth/permissions/permissions.guard";
 import {
   Permissions,
   PermsLevel,
 } from "src/auth/permissions/permissions.decorator";
-import { CreateUserDto } from "./dto/create.dto";
+import { CreateAlDto } from "./dto/create.dto";
 
-@Controller("users")
+@Controller("al")
 @UseGuards(AuthGuard, PermissionsGuard)
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class AlController {
+  constructor(private readonly alService: AlService) {}
 
   @Get()
-  getAll() {
-    return this.usersService.getAll();
+  retrieve() {
+    return this.alService.retrieve();
   }
 
   @Post()
   @Permissions(PermsLevel.Admin)
-  create(@Body() data: CreateUserDto) {
-    return this.usersService.create(data);
+  create(@Body() data: CreateAlDto) {
+    return this.alService.create(data);
   }
 
   @Delete("/:id")
   @Permissions(PermsLevel.Admin)
   delete(@Param("id") id: string) {
-    return this.usersService.delete(id);
+    return this.alService.delete(id);
   }
 }

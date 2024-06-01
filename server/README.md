@@ -6,30 +6,39 @@
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is the API of an Assistance System, created with [Nest](https://nestjs.com), [TypeScript](https://www.typescriptlang.org/), [Prisma (PostgreSQL)](https://prisma.io) and [JWT](https://jwt.io).
+
+## Table of Content
+
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Start](#running-the-app)
+- [Endpoints](#endpoints)
+  - [Auth](#auth-v1auth)
+  - [Users](#users-v1users)
+  - [Academic Levels](#academic-level-v1al)
+  - [Grades](#grades-v1grades)
+  - [Schedules](#schedules-v1schedules)
+  - [Assistance](#assistance-v1assistance)
+- [License](#license)
 
 ## Installation
 
 ```bash
 $ pnpm install
+```
+
+## Configuration
+
+Add the following env variables:
+
+```toml
+DATABASE_URL="postgresql://..."
+JWT_ACCESS_SECRET="..."
+JWT_REFRESH_SECRET="..."
 ```
 
 ## Running the app
@@ -45,29 +54,344 @@ $ pnpm run start:dev
 $ pnpm run start:prod
 ```
 
-## Test
+## Endpoints
 
-```bash
-# unit tests
-$ pnpm run test
+### Auth {`/v1/auth`}
 
-# e2e tests
-$ pnpm run test:e2e
+- (**POST**) `/login`: Sign In.
 
-# test coverage
-$ pnpm run test:cov
-```
+  Body:
 
-## Support
+  ```json
+  {
+    "email": "user@email.com",
+    "password": "*****"
+  }
+  ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+  Response:
 
-## Stay in touch
+  ```json
+  {
+    "accessToken": "...",
+    "refreshToken": "..."
+  }
+  ```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- (**POST**) `/refresh`: Refresh a session.
+
+  Body:
+
+  ```jsonc
+  {
+    "token": "...", // <-- Refresh token here
+  }
+  ```
+
+  Response:
+
+  ```json
+  {
+    "accessToken": "...",
+    "refreshToken": "..."
+  }
+  ```
+
+### Users {`/v1/users`}
+
+- (**GET**) `/`: Get all users.
+
+  Response:
+
+  ```jsonc
+  [
+    {
+      "id": "...",
+      "firstName": "...",
+      "lastName": "...",
+      "email": "...",
+      "permissionsLevel": 0, // also 1 or 2
+    },
+    ...
+  ]
+  ```
+
+- (**POST**) `/`: Create an user.
+
+  > [!NOTE]
+  > Permissions Level is a range between 0-2:
+  > 0 is a **Guest**, 1 is a **Teacher** and 2 is an **Admin**.
+
+  Body:
+
+  ```jsonc
+  {
+    "id": "...",
+    "firstName": "...",
+    "lastName": "...",
+    "email": "...",
+    "permissionsLevel": 0,
+  }
+  ```
+
+  Response:
+
+  ```json
+  {
+    "id": "...",
+    "firstName": "...",
+    "lastName": "...",
+    "email": "...",
+    "permissionsLevel": 0
+  }
+  ```
+
+- (**DELETE**) `/:id`: Delete an user by id.
+
+  Response:
+
+  ```json
+  {
+    "id": "..."
+  }
+  ```
+
+### Academic Level {`/v1/al`}
+
+- (**GET**) `/`: Get all academic levels.
+
+  Response:
+
+  ```jsonc
+  [
+    {
+      "id": "...",
+      "name": "...",
+    },
+    ...
+  ]
+  ```
+
+- (**POST**) `/:id`: Create an academic level.
+
+  Body:
+
+  ```jsonc
+  {
+    "name": "...",
+  }
+  ```
+
+  Response:
+
+  ```json
+  {
+    "id": "...",
+    "name": "..."
+  }
+  ```
+
+- (**DELETE**) `/:id`: Delete an academic level by id.
+
+  Response:
+
+  ```json
+  {
+    "id": "..."
+  }
+  ```
+
+### Grades {`/v1/grades`}
+
+- (**GET**) `/`: Get all grades.
+
+  Response:
+
+  ```json
+  [
+    {
+      "id": "...",
+      "label": 3,
+      "section": "...",
+      "academicLevel": {
+        "id": "...",
+        "name": "..."
+      }
+    },
+    ...
+  ]
+  ```
+
+- (**GET**) `/:id`: Get a grade by id.
+
+  Response:
+
+  ```json
+  {
+    "id": "...",
+    "label": 3,
+    "section": "...",
+    "academicLevel": {
+      "id": "...",
+      "name": "..."
+    }
+  }
+  ```
+
+- (**POST**) `/`: Create a grade.
+
+  body:
+
+  ```json
+  {
+    "label": 3,
+    "section": "...",
+    "academicLevelId": "..."
+  }
+  ```
+
+  Response:
+
+  ```json
+  {
+    "id": "...",
+    "label": 3,
+    "section": "...",
+    "academicLevel": {
+      "id": "...",
+      "name": "..."
+    }
+  }
+  ```
+
+- (**PATCH**) `/:id`: Update a grade.
+
+  body:
+
+  ```jsonc
+  {
+    "label": 3, // Optional
+    "section": "...", // Optional
+    "academicLevelId": "...", // Optional
+  }
+  ```
+
+  Response:
+
+  ```json
+  {
+    "id": "...",
+    "label": 3,
+    "section": "...",
+    "academicLevel": {
+      "id": "...",
+      "name": "..."
+    }
+  }
+  ```
+
+- (**DELETE**) `/:id`: Delete a grade.
+
+  Response:
+
+  ```json
+  {
+    "id": "..."
+  }
+  ```
+
+### Schedules {`/v1/schedules`}
+
+> [!NOTE] "LEA" is **Learning Experiences Assessment**.
+
+- (**GET**) `/`:
+
+  Response:
+
+  ```json
+  [
+    {
+      "id": "...",
+      "gradeId": "...",
+      "lea": 1,
+    },
+    ...
+  ]
+  ```
+
+- (**POST**) `/`:
+
+  Body:
+
+  ```json
+  {
+    "gradeId": "...",
+    "lea": 1
+  }
+  ```
+
+  Response:
+
+  ```json
+  {
+    "id": "...",
+    "gradeId": "...",
+    "lea": 1
+  }
+  ```
+
+- (**DELETE**) `/:id`:
+
+  Response:
+
+  ```json
+  {
+    "id": "..."
+  }
+  ```
+
+### Assistance {`/v1/assistance`}
+
+- (**GET**) `/:scheduleId`: Get all assistances.
+
+  Response:
+
+  ```jsonc
+  [
+    {
+      "id": "...",
+      "date": "...", // <- In ISO date format.
+      "scheduleId": "..."
+    },
+    ...
+  ]
+  ```
+
+- (**POST**) `/`: Register a assistance.
+
+  > [!NOTE] "presents", "lates" and "absences" are an array of user IDs.
+
+  Body:
+
+  ```json
+  {
+    "scheduleId": "...",
+    "presents": ["...", "..."],
+    "lates": ["...", "..."],
+    "absences": ["...", "..."]
+  }
+  ```
+
+  Response:
+
+  ```jsonc
+  {
+    "id": "...",
+    "date": "...", // <- In ISO date format.
+    "scheduleId": "...",
+  }
+  ```
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is under the [GPL-3.0 license](LICENSE).

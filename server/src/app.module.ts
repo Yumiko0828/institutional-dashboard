@@ -4,10 +4,10 @@ import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { StudentsModule } from "./students/students.module";
 import { GradeModule } from "./grade/grade.module";
-import { LevelModule } from "./level/level.module";
-import { EdaModule } from "./eda/eda.module";
-import { AssitanceModule } from "./assitance/assitance.module";
+import { AssistanceModule } from "./assistance/assistance.module";
 import { ConfigModule } from "@nestjs/config";
+import { AlModule } from "./al/al.module";
+import { SchedulesModule } from "./schedules/schedules.module";
 import configuration from "./config/configuration";
 
 @Module({
@@ -21,9 +21,9 @@ import configuration from "./config/configuration";
     UsersModule,
     StudentsModule,
     GradeModule,
-    LevelModule,
-    EdaModule,
-    AssitanceModule,
+    AssistanceModule,
+    AlModule,
+    SchedulesModule,
   ],
   controllers: [],
   providers: [],
