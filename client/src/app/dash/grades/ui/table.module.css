@@ -1,0 +1,15 @@
+.btn_group {
+  @apply flex gap-1 sm:justify-center;
+}
+
+.btn {
+  @apply p-2 rounded-lg outline-none transition-colors duration-300;
+}
+
+.btn[data-type="update"] {
+  @apply bg-cyan-400 hover:bg-cyan-500;
+}
+
+.btn[data-type="delete"] {
+  @apply bg-red-400 hover:bg-red-500 hover:text-red-50;
+}

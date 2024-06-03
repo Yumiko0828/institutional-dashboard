@@ -1,0 +1,24 @@
+/* Table */
+.container {
+  @apply w-full table-fixed border-collapse;
+}
+
+/* Table head */
+.container thead {
+  @apply hidden sm:table-header-group;
+}
+
+/* Table Row */
+.container tr {
+  @apply block bg-slate-200 sm:border sm:border-slate-400 mb-3 sm:table-row;
+}
+
+/* Table Col */
+.container th {
+  @apply p-3 text-right text-sm uppercase sm:text-center;
+}
+
+/* Table Item */
+.container td {
+  @apply p-3 text-right flex justify-between items-center border border-slate-200 bg-slate-100 sm:text-center before:content-[attr(data-label)] before:float-left before:font-bold before:uppercase sm:table-cell sm:border-none sm:before:hidden;
+}
