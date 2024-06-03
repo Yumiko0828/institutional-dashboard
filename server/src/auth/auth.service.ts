@@ -36,7 +36,7 @@ export class AuthService {
       .verifyAsync(token, {
         secret: REFRESH_SECRET,
       })
-      .catch(() => {
+      .catch((e) => {
         throw new BadRequestException("Invalid token");
       });
 
@@ -53,23 +53,28 @@ export class AuthService {
   }
 
   private async generateTokens({ userId }: JwtPayload) {
-    const { ACCESS_SECRET, REFRESH_SECRET } =
+    const { ACCESS_SECRET, REFRESH_SECRET, ACCESS_EXPIRES, REFRESH_EXPIRES } =
       this.config.get<JwtConfig>("JWT")!;
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwt.signAsync(
         { userId },
-        { secret: ACCESS_SECRET, expiresIn: 15 * 60 /* 15 minutes */ },
+        { secret: ACCESS_SECRET, expiresIn: ACCESS_EXPIRES },
       ),
       this.jwt.signAsync(
         { userId },
-        { secret: REFRESH_SECRET, expiresIn: 60 * 60 /* 1 hour */ },
+        { secret: REFRESH_SECRET, expiresIn: REFRESH_EXPIRES },
       ),
     ]);
+
+    const { exp: accessExp } = this.jwt.decode<{ exp: number }>(accessToken);
+    const { exp: refreshExp } = this.jwt.decode<{ exp: number }>(refreshToken);
 
     return {
       accessToken,
       refreshToken,
+      accessExp,
+      refreshExp,
     };
   }
 }

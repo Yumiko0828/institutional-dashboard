@@ -20,6 +20,19 @@ export class UsersService {
     });
   }
 
+  whoami(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        permissionsLevel: true,
+      },
+    });
+  }
+
   async create({
     firstName,
     lastName,

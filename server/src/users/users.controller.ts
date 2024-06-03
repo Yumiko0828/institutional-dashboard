@@ -15,6 +15,7 @@ import {
   PermsLevel,
 } from "src/auth/permissions/permissions.decorator";
 import { CreateUserDto } from "./dto/create.dto";
+import { User } from "./users.decorator";
 
 @Controller("users")
 @UseGuards(AuthGuard, PermissionsGuard)
@@ -24,6 +25,11 @@ export class UsersController {
   @Get()
   getAll() {
     return this.usersService.getAll();
+  }
+
+  @Get("/whoami")
+  whoami(@User() userId: string) {
+    return this.usersService.whoami(userId);
   }
 
   @Post()

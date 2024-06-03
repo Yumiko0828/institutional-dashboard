@@ -74,7 +74,9 @@ $ pnpm run start:prod
   ```json
   {
     "accessToken": "...",
-    "refreshToken": "..."
+    "refreshToken": "...",
+    "accessExp": 1717457048,
+    "refreshExp": 1717457048
   }
   ```
 
@@ -93,7 +95,9 @@ $ pnpm run start:prod
   ```json
   {
     "accessToken": "...",
-    "refreshToken": "..."
+    "refreshToken": "...",
+    "accessExp": 1717457048,
+    "refreshExp": 1717457048
   }
   ```
 
@@ -114,6 +118,20 @@ $ pnpm run start:prod
     },
     ...
   ]
+  ```
+
+- (**GET**) `/whoami`: Get session profile.
+
+  Response:
+
+  ```jsonc
+  {
+    "id": "...",
+    "firstName": "...",
+    "lastName": "...",
+    "email": "...",
+    "permissionsLevel": 0,
+  }
   ```
 
 - (**POST**) `/`: Create an user.
