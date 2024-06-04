@@ -1,5 +1,5 @@
 import Nav from "@/components/Nav";
-import Loader from "@/contexts/Loader";
+import Loader from "@/components/Loader";
 import { ReactNode } from "react";
 
 export default function DashLayout({ children }: { children: ReactNode }) {

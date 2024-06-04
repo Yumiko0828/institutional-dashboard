@@ -8,7 +8,7 @@ interface Props {
   children: ReactNode;
 }
 
-function Loader({ children }: Props) {
+function LoaderWrapper({ children }: Props) {
   const { status } = useSession();
 
   return (
@@ -25,4 +25,4 @@ function Loader({ children }: Props) {
   );
 }
 
-export default Loader;
+export default LoaderWrapper;
