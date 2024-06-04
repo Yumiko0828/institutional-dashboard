@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import { api } from "./api";
+import { ApiAuth, ApiError, ApiUser } from "./api.definitions";
 
 export class AuthService {
   static instance: AuthService;

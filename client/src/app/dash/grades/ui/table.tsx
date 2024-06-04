@@ -8,6 +8,7 @@ import useSWR from "swr";
 import Table from "@/components/Table";
 import styles from "./table.module.css";
 import { useSession } from "next-auth/react";
+import { ApiGrade } from "@/provider/api.definitions";
 
 function GradeTable() {
   const [grades, setGrades] = useState<ApiGrade[]>([]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { FiX, FiMenu } from "react-icons/fi";
 import { GoHomeFill } from "react-icons/go";
 import { HiMiniUsers } from "react-icons/hi2";
@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { url } from "gravatar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 interface Props {
   children: ReactNode;
@@ -83,9 +84,11 @@ function Nav({ children }: Props) {
           </ul>
           {status === "authenticated" && (
             <div className="flex gap-3 items-center px-3 py-2">
-              <img
+              <Image
                 src={url(data!.user.email, { size: "64" })}
                 alt={data.user.email}
+                width={64}
+                height={64}
                 className="rounded-full w-16 h-16"
               />
 

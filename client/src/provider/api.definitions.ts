@@ -1,4 +1,4 @@
-declare interface ApiUser {
+export interface ApiUser {
   id: string;
   firstName: string;
   lastName: string;
@@ -6,32 +6,32 @@ declare interface ApiUser {
   permissionsLevel: number;
 }
 
-declare interface ApiAuth {
+export interface ApiAuth {
   accessToken: string;
   accessExp: number;
   refreshToken: string;
   refreshExp: number;
 }
 
-declare interface ApiAcademicLevel {
+export interface ApiAcademicLevel {
   id: string;
   name: string;
 }
 
-declare interface ApiGrade {
+export interface ApiGrade {
   id: string;
   label: number;
   section: string;
   academicLevel: ApiAcademicLevel;
 }
 
-declare interface ApiSchedule {
+export interface ApiSchedule {
   id: string;
   gradeId: string;
   lea: number;
 }
 
-declare interface ApiError {
+export interface ApiError {
   message: string | string[];
   error: string;
   statusCode: number;
