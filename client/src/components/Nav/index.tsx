@@ -85,7 +85,7 @@ function Nav({ children }: Props) {
           {status === "authenticated" && (
             <div className="flex gap-3 items-center px-3 py-2">
               <Image
-                src={url(data!.user.email, { size: "64" })}
+                src={url(data!.user.email, { size: "64", protocol: "https" })}
                 alt={data.user.email}
                 width={64}
                 height={64}
