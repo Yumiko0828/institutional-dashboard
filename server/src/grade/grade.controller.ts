@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import { GradeService } from "./grade.service";
@@ -26,6 +27,11 @@ export class GradeController {
   @Get()
   retrieve() {
     return this.gradeService.retrieve();
+  }
+
+  @Get("/search")
+  search(@Query("q") query: string) {
+    return this.gradeService.search(query);
   }
 
   @Get("/:id")

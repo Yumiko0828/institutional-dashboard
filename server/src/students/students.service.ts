@@ -11,7 +11,7 @@ import { UpdateStudentDto } from "./dto/update.dto";
 export class StudentsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getAll(grade: number, section: string, page: number) {
+  getAll(grade: string, section: string, page: number) {
     const take = 30,
       skip = take * (page - 1);
 

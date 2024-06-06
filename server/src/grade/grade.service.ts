@@ -21,9 +21,46 @@ export class GradeService {
     });
   }
 
-  retrieveOne(id: string) {
+  async retrieveOne(id: string) {
     return this.prisma.grade.findUnique({
       where: { id },
+      select: {
+        id: true,
+        label: true,
+        section: true,
+        academicLevel: true,
+        _count: {
+          select: {
+            students: true,
+          },
+        },
+      },
+    });
+  }
+
+  async search(query: string) {
+    return this.prisma.grade.findMany({
+      where: {
+        OR: [
+          {
+            label: { contains: query, mode: "insensitive" },
+          },
+          {
+            section: { contains: query, mode: "insensitive" },
+          },
+          {
+            academicLevel: {
+              name: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+          },
+        ],
+      },
+      orderBy: {
+        label: "desc",
+      },
       select: {
         id: true,
         label: true,
@@ -37,7 +74,7 @@ export class GradeService {
     const existGrade = await this.prisma.grade.findUnique({
       where: {
         uniqueGrade: {
-          label,
+          label: label.toString(),
           section,
           academicLevelId,
         },
@@ -53,7 +90,7 @@ export class GradeService {
     return this.prisma.grade.create({
       data: {
         section,
-        label,
+        label: label.toString(),
         academicLevelId,
       },
       select: {
@@ -75,7 +112,7 @@ export class GradeService {
 
     if (!grade) throw new BadRequestException("Invalid id");
 
-    if (label && label === grade.label) label = undefined;
+    if (label && label.toString() === grade.label) label = undefined;
     if (section && section === grade.section) section = undefined;
     if (academicLevelId && academicLevelId === grade.academicLevelId)
       academicLevelId = undefined;
@@ -98,7 +135,7 @@ export class GradeService {
       data: {
         academicLevelId,
         section,
-        label,
+        label: label ? label.toString() : undefined,
       },
       select: {
         id: true,

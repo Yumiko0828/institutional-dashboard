@@ -27,7 +27,7 @@ export class StudentsController {
 
   @Get()
   getAll(
-    @Query("grade", ParseIntPipe) grade: number,
+    @Query("grade") grade: string,
     @Query("section") section: string,
     @Query("page", ParseIntPipe) page: number,
   ) {

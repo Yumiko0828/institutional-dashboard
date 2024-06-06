@@ -229,7 +229,33 @@ $ pnpm run start:prod
   [
     {
       "id": "...",
-      "label": 3,
+      "label": "3",
+      "section": "...",
+      "academicLevel": {
+        "id": "...",
+        "name": "..."
+      }
+    },
+    ...
+  ]
+
+- (**GET**) `/search`: Search a grade.
+
+  Search Params:
+
+  ```json
+  {
+    "q": "The query prompt"
+  }
+  ```
+
+  Response:
+
+  ```json
+  [
+    {
+      "id": "...",
+      "label": "3",
       "section": "...",
       "academicLevel": {
         "id": "...",
@@ -247,11 +273,14 @@ $ pnpm run start:prod
   ```json
   {
     "id": "...",
-    "label": 3,
+    "label": "3",
     "section": "...",
     "academicLevel": {
       "id": "...",
       "name": "..."
+    },
+    "_count": {
+      "students": 0
     }
   }
   ```
@@ -273,7 +302,7 @@ $ pnpm run start:prod
   ```json
   {
     "id": "...",
-    "label": 3,
+    "label": "3",
     "section": "...",
     "academicLevel": {
       "id": "...",
@@ -299,7 +328,7 @@ $ pnpm run start:prod
   ```json
   {
     "id": "...",
-    "label": 3,
+    "label": "3",
     "section": "...",
     "academicLevel": {
       "id": "...",

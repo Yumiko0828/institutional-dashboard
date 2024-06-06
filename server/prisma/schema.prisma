@@ -35,11 +35,11 @@ model Student {
 
 model Grade {
   id              String        @id @default(uuid())
-  label           Int
+  label           String
   section         String
   academicLevelId String        @map("academic_level_id")
   academicLevel   AcademicLevel @relation(fields: [academicLevelId], references: [id])
-  Student         Student[]
+  students        Student[]
 
   @@unique(name: "uniqueGrade", [label, section, academicLevelId])
 }
@@ -53,7 +53,7 @@ model AcademicLevel {
 model Assistance {
   id         String   @id @default(uuid())
   date       DateTime @default(now())
-  scheduleId String   @unique
+  scheduleId String   @unique @map("schedule_id")
   presents   User[]   @relation("presents")
   lates      User[]   @relation("lates")
   absences   User[]   @relation("absences")
