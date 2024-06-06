@@ -1,0 +1,13 @@
+model User {
+  id               String       @id @default(uuid())
+  firstName        String       @map("first_name")
+  lastName         String       @map("last_name")
+  email            String       @unique
+  permissionsLevel Int          @default(0)
+  password         String
+  presentsIn       Assistance[] @relation("presents")
+  latesIn          Assistance[] @relation("lates")
+  absencesIn       Assistance[] @relation("absences")
+
+  @@unique(name: "fullName", [firstName, lastName])
+}

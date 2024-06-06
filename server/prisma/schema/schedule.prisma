@@ -1,0 +1,6 @@
+model Schedule {
+  id          String       @id @default(uuid())
+  gradeId     String       @map("grade_id")
+  lea         Int          @unique
+  assistances Assistance[]
+}

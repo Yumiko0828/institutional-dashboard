@@ -1,0 +1,5 @@
+model AcademicLevel {
+  id     String  @id @default(uuid())
+  name   String  @unique
+  grades Grade[]
+}
