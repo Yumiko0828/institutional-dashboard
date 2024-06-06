@@ -1,54 +1,36 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
-import { useSearchParams } from "next/navigation";
-import useSWR from "swr";
-
+import { ApiGrade } from "@/provider/api.definitions";
 import Table from "@/components/Table";
 import styles from "./table.module.css";
+import useSWR from "swr";
+import { useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
-import { ApiGrade } from "@/provider/api.definitions";
 
-function GradeTable() {
-  const [grades, setGrades] = useState<ApiGrade[]>([]);
-  const [cols, setCols] = useState(["#", "Grado", "Sección", "Nivel"]);
-  const search = useSearchParams(),
-    query = search.get("search");
-  const { data, isLoading } = useSWR<ApiGrade[]>("/grades");
+export type Filter = (value: ApiGrade) => boolean;
+
+interface Props {
+  filter?: Filter;
+  onFilterResults?: (length: number) => void;
+}
+
+function GradeTable({ filter: f, onFilterResults }: Props) {
+  const { data: grades } = useSWR<ApiGrade[]>("/grades");
+  const cols = ["#", "Grado", "Sección", "Nivel", "Opciones"];
   const { data: session } = useSession();
 
+  const filteredGrades = useMemo(() => {
+    if (!grades) return [];
+    return f ? (grades || []).filter(f) : grades;
+  }, [grades, f, onFilterResults]);
+
   useEffect(() => {
-    if (data) {
-      if (query) {
-        const filterData = data.filter(
-          (g) =>
-            g.label.toString().includes(query) ||
-            g.section.includes(query) ||
-            g.academicLevel.name.includes(query)
-        );
-
-        return setGrades(filterData);
-      }
-
-      setGrades(data);
+    if (f && onFilterResults) {
+      onFilterResults(filteredGrades.length);
     }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (session && session.user.permissionsLevel === 2)
-      setCols([...cols, "Opciones"]);
-  }, []);
+  }, [filteredGrades, f, onFilterResults]);
 
   return (
     <>
-      {query && (
-        <p>
-          <strong>{grades.length}</strong>{" "}
-          {grades.length === 1 ? "Resultado" : "Resultados"} de la busqueda "
-          {query}"
-        </p>
-      )}
       <Table>
         <Table.Head>
           {cols.map((label) => (
@@ -56,14 +38,14 @@ function GradeTable() {
           ))}
         </Table.Head>
         <Table.Body>
-          {grades.map(({ id, label, section, academicLevel }, i) => (
+          {filteredGrades.map(({ id, label, section, academicLevel }, i) => (
             <Table.Row key={id}>
               <Table.Item label={cols[0]}>{i + 1}</Table.Item>
               <Table.Item label={cols[1]}>{label}</Table.Item>
               <Table.Item label={cols[2]}>"{section}"</Table.Item>
               <Table.Item label={cols[3]}>{academicLevel.name}</Table.Item>
-              {session && session.user.permissionsLevel === 2 && (
-                <Table.Item label={cols[4]}>
+              <Table.Item label={cols[4]}>
+                {session && session.user.permissionsLevel === 2 && (
                   <div className={styles.btn_group}>
                     <button
                       type="button"
@@ -89,8 +71,8 @@ function GradeTable() {
                       <FiTrash />
                     </button>
                   </div>
-                </Table.Item>
-              )}
+                )}
+              </Table.Item>
             </Table.Row>
           ))}
         </Table.Body>
