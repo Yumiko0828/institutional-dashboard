@@ -39,24 +39,17 @@ export class GradeService {
   }
 
   async search(query: string) {
+    const keywords = query.split(" ");
+
     return this.prisma.grade.findMany({
       where: {
-        OR: [
-          {
-            label: { contains: query, mode: "insensitive" },
-          },
-          {
-            section: { contains: query, mode: "insensitive" },
-          },
-          {
-            academicLevel: {
-              name: {
-                contains: query,
-                mode: "insensitive",
-              },
-            },
-          },
-        ],
+        OR: keywords.map((k) => ({
+          OR: [
+            { label: { contains: k, mode: "insensitive" } },
+            { section: { contains: k, mode: "insensitive" } },
+            { academicLevel: { name: { contains: k, mode: "insensitive" } } },
+          ],
+        })),
       },
       orderBy: {
         label: "desc",
