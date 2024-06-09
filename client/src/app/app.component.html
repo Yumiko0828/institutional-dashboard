@@ -1,0 +1,7 @@
+@switch (pageLayoutService.layout$ | async) { @case (PageLayout.Dashboard) {
+<app-nav>
+  <router-outlet />
+</app-nav>
+} @default {
+<router-outlet />
+} }

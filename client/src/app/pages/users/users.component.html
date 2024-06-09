@@ -1,0 +1,17 @@
+<div class="wrapper">
+  <app-table [columns]="['#', 'Nombres', 'Email', 'Cuenta', 'Opciones']">
+    @for (user of usersResults | async; track $index) {
+    <app-table-row>
+      <app-table-cell [dataLabel]="'2'">{{ $index + 1 }}</app-table-cell>
+      <app-table-cell [dataLabel]="'2'"
+        >{{ user.firstName }} {{ user.lastName }}</app-table-cell
+      >
+      <app-table-cell [dataLabel]="'2'">{{ user.email }}</app-table-cell>
+      <app-table-cell [dataLabel]="'2'">{{
+        getPermString(user.permissionsLevel)
+      }}</app-table-cell>
+      <app-table-cell [dataLabel]="'2'">Opciones</app-table-cell>
+    </app-table-row>
+    }
+  </app-table>
+</div>

@@ -1,0 +1,12 @@
+<table class="table table-fixed border-collapse w-full">
+  <thead class="table-header-group">
+    <app-table-row>
+      @for (item of columns; track $index) {
+      <th scope="col" class="p-3 text-right text-sm uppercase sm:text-center">{{ item }}</th>
+      }
+    </app-table-row>
+  </thead>
+  <tbody>
+    <ng-content />
+  </tbody>
+</table>
