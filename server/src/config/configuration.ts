@@ -8,8 +8,8 @@ export interface JwtConfig {
 export default () => ({
   JWT: {
     ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
-    ACCESS_EXPIRES: 15 * 60,
+    ACCESS_EXPIRES: 5,
     REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
-    REFRESH_EXPIRES: 60 * 60,
+    REFRESH_EXPIRES: 2 * 60,
   } as JwtConfig,
 });

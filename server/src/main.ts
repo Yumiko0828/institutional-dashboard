@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix("/v1");
-  app.use(morgan("combined"));
+  app.use(morgan("dev"));
 
   await app.listen(3000);
 }
