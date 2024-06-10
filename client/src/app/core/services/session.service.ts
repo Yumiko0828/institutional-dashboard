@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../interfaces/api';
+import { AuthResponse } from '@interfaces/api';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -67,9 +67,8 @@ export class SessionService {
     });
   }
 
-  signIn(data: AuthResponse) {
-    this.saveTokens(data);
-    this.router.navigateByUrl('/');
+  signIn(data: Record<'email' | 'password', string>) {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, data);
   }
 
   signOut(redirect: boolean = true) {

@@ -9,10 +9,10 @@ import {
   featherLogOut,
 } from '@ng-icons/feather-icons';
 import { heroSquares2x2 } from '@ng-icons/heroicons/outline';
-import { UserResponse } from 'src/app/core/interfaces/api';
-import { UsersService } from 'src/app/core/services/users.service';
+import { UserResponse } from '@interfaces/api';
+import { UsersService } from '@services/users.service';
 import { url } from 'gravatar';
-import { SessionService } from 'src/app/core/services/session.service';
+import { SessionService } from '@services/session.service';
 
 @Component({
   selector: 'app-nav',

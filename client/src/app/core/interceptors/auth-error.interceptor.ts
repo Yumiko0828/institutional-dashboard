@@ -16,7 +16,7 @@ import {
   take,
   throwError,
 } from 'rxjs';
-import { SessionService } from '../services/session.service';
+import { SessionService } from '@services/session.service';
 
 export const authErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const session = inject(SessionService);

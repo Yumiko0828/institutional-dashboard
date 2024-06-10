@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { PageLayout } from '../enums/page-layout';
+import { PageLayout } from '@enums/page-layout';
 
 @Injectable({
   providedIn: 'root',

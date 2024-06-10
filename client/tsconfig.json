@@ -20,7 +20,16 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@enums/*": ["src/app/core/enums/*"],
+      "@guards/*": ["src/app/core/guards/*"],
+      "@resolvers/*": ["src/app/core/resolvers/*"],
+      "@services/*": ["src/app/core/services/*"],
+      "@interceptors/*": ["src/app/core/interceptors/*"],
+      "@interfaces/*": ["src/app/core/interfaces/*"],
+      "@components/*": ["src/app/components/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -12,3 +12,9 @@ export interface UserResponse {
   email: string;
   permissionsLevel: number;
 }
+
+export interface ErrorResponse {
+  message: string | string[];
+  error: string;
+  statusCode: number;
+}

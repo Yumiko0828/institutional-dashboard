@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { SessionService } from '../services/session.service';
+import { SessionService } from '@services/session.service';
 import { EMPTY, concatMap } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {

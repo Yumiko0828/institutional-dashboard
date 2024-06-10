@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { EMPTY, catchError } from 'rxjs';
-import { LoginService } from 'src/app/core/services/login.service';
+import { SessionService } from '@services/session.service';
 
 @Component({
   selector: 'app-login',
@@ -22,28 +22,32 @@ export class LoginComponent implements OnInit {
   errorMessage?: string;
   disabled: boolean = false;
 
-  constructor(private service: LoginService) {}
+  constructor(private service: SessionService) {}
 
   ngOnInit(): void {
     this.loginForm.events.subscribe((e) => {
       if (e instanceof FormSubmittedEvent) {
         this.errorMessage = undefined;
         const { email, password } = e.source.value;
+        // Disable form
         this.loginForm.disable();
         this.disabled = true;
 
+        // SignIn Request
         this.service
-          .sendReq({ email, password })
+          .signIn({ email, password })
           .pipe(
             catchError((err: string) => {
+              // Enable form
               this.errorMessage = err;
               this.loginForm.enable();
               this.disabled = false;
+
               return EMPTY;
             })
           )
           .subscribe((e) => {
-            this.service.saveSession(e);
+            this.service.saveTokens(e);
           });
       }
     });
