@@ -16,4 +16,14 @@ export class UsersService {
   whoami() {
     return this.http.get<UserResponse>(`${environment.apiUrl}/users/whoami`);
   }
+
+  register(data: UserResponse) {
+    return this.http.post<UserResponse>(`${environment.apiUrl}/users`, data);
+  }
+
+  delete(id: string) {
+    return this.http.delete<Record<'id', string>>(
+      `${environment.apiUrl}/users/${id}`
+    );
+  }
 }
