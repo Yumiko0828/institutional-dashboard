@@ -25,7 +25,7 @@ import { SessionService } from '@services/session.service';
   templateUrl: './nav.component.html',
 })
 export class NavComponent implements OnInit {
-  active = true;
+  active = false;
   user!: UserResponse;
 
   routes = [
