@@ -1,15 +1,18 @@
-<div class="relative w-full h-full flex overflow-hidden">
+<div
+  class="relative w-full h-full grid grid-cols-dashboard grid-rows-dashboard"
+>
+  <!-- Sidebar -->
   <nav
-    class="bg-slate-900 w-full {{
-      active ? 'max-w-xs' : 'max-w-0'
-    }} h-full absolute top-0 left-0 z-50 overflow-hidden transition-all duration-300 md:relative md:!max-w-xs"
+    class="bg-zinc-900 absolute top-0 left-0 {{
+      active ? 'translate-x-0' : '-translate-x-full'
+    }} w-full h-full max-w-xs z-50 flex flex-col overflow-x-hidden transition-transform duration-300 md:relative md:!translate-x-0 md:row-sidebar"
   >
-    <div class="flex justify-between items-center w-full px-3 py-2 md:hidden">
+    <div class="flex justify-between items-center w-full px-3 py-2">
       <h5 class="text-slate-50 text-xl">Navegación</h5>
       <button
         type="button"
         (click)="toggleActive()"
-        class="text-3xl outline-none flex justify-center items-center p-1 rounded-full bg-slate-800 text-nowrap text-slate-50"
+        class="text-2xl outline-none flex justify-center items-center p-2 rounded-full bg-zinc-800 text-nowrap text-slate-50 md:hidden"
       >
         @if (active) {
         <ng-icon name="featherX" />
@@ -18,15 +21,16 @@
         }
       </button>
     </div>
-    <div class="flex flex-col justify-between h-full">
-      <ul>
+    <!-- Links -->
+    <div class="flex flex-col justify-between h-full p-4">
+      <ul class="overflow-y-auto">
         @for (item of routes; track $index) {
-        <li>
+        <li class="py-1">
           <a
             [routerLink]="item.url"
-            [routerLinkActive]="'!bg-slate-800 border-r-4 border-r-blue-400'"
+            [routerLinkActive]="'!bg-purple-400 bg-opacity-30 !text-purple-950 border-r-4 border-r-purple-400'"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="flex items-center gap-3 text-slate-50 px-3 py-5 cursor-default transition-colors duration-300 hover:bg-slate-800 hover:bg-opacity-50"
+            class="flex items-center gap-3 text-purple-100 p-3 cursor-default rounded-2xl transition-colors duration-300 hover:bg-purple-800 hover:bg-opacity-10"
             (click)="toggleActive()"
           >
             <ng-icon [svg]="item.icon" /> {{ item.label }}
@@ -35,46 +39,48 @@
         }
       </ul>
       <a
-        class="flex items-center gap-3 text-slate-50 px-3 py-5 cursor-default transition-colors duration-300 hover:bg-slate-800"
+        class="flex items-center gap-3 text-slate-50 p-3 cursor-default bg-zinc-800 rounded-2xl transition-colors duration-300 hover:bg-red-500 hover:bg-opacity-10"
         (click)="logOut()"
       >
         <ng-icon name="featherLogOut" /> Cerrar sesión
       </a>
     </div>
   </nav>
-  <div class="w-full h-full">
-    <nav class="flex justify-between items-center px-3 py-2 h-16 bg-slate-900">
-      <button
-        type="button"
-        (click)="toggleActive()"
-        class="flex items-center justify-center text-3xl outline-none text-slate-50 bg-slate-900 px-3 py-1 rounded-xl md:hidden"
-      >
-        @if (active) {
-        <ng-icon name="featherX" />
-        } @else {
-        <ng-icon name="featherMenu" />
-        }
-      </button>
+  <!-- Header -->
+  <nav
+    class="col-header flex justify-between items-center px-3 py-2 h-16 bg-zinc-950 md:col-header-md"
+  >
+    <button
+      type="button"
+      (click)="toggleActive()"
+      class="flex items-center justify-center text-3xl outline-none text-zinc-50 px-3 py-1 md:hidden"
+    >
+      @if (active) {
+      <ng-icon name="featherX" />
+      } @else {
+      <ng-icon name="featherMenu" />
+      }
+    </button>
 
-      <div class="flex justify-end w-full items-center gap-3">
-        @if (user) {
-        <img
-          [src]="getAvatarUrl()"
-          [alt]="user.email"
-          class="rounded-full w-12"
-        />
+    <div class="flex justify-end w-full items-center gap-3">
+      @if (user) {
+      <img
+        [src]="getAvatarUrl()"
+        [alt]="user.email"
+        class="rounded-full w-12"
+      />
 
-        <div>
-          <p class="text-slate-50">{{ user.firstName }} {{ user.lastName }}</p>
-          <p class="text-slate-400 text-xs">{{ user.email }}</p>
-        </div>
-        }
+      <div>
+        <p class="text-slate-50">{{ user.firstName }} {{ user.lastName }}</p>
+        <p class="text-slate-400 text-xs">{{ user.email }}</p>
       </div>
-    </nav>
-
-    <!-- children -->
-    <div class="w-full h-full bg-slate-950 overflow-y-auto">
-      <ng-content />
+      }
     </div>
+  </nav>
+  <!-- Content -->
+  <div
+    class="col-content w-full h-full bg-zinc-950 overflow-auto md:col-content-md"
+  >
+    <ng-content />
   </div>
 </div>

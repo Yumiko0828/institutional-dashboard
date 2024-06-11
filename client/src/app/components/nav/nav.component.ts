@@ -22,7 +22,7 @@ import { SessionService } from '@services/session.service';
   templateUrl: './nav.component.html',
 })
 export class NavComponent implements OnInit {
-  active: boolean = false;
+  active = true;
   user!: UserResponse;
 
   routes = [
@@ -35,6 +35,11 @@ export class NavComponent implements OnInit {
       label: 'Usuarios',
       url: '/users',
       icon: featherUsers,
+    },
+    {
+      label: 'Cursos',
+      url: '/courses',
+      icon: featherList,
     },
     {
       label: 'Grados',

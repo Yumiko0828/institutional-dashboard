@@ -7,3 +7,16 @@ body,
 .wrapper {
   @apply w-full h-full;
 }
+
+.wrapper {
+  @apply p-3;
+}
+
+/* Default tables rows & cols styles */
+tr[data-row] {
+  @apply odd:bg-zinc-900 even:bg-zinc-800 border-b border-zinc-700 w-full;
+}
+
+tr[data-row] > td {
+  @apply px-6 py-4;
+}

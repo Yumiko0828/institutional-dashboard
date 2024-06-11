@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { EMPTY, catchError } from 'rxjs';
 import { SessionService } from '@services/session.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,7 @@ export class LoginComponent implements OnInit {
   errorMessage?: string;
   disabled: boolean = false;
 
-  constructor(private service: SessionService) {}
+  constructor(private service: SessionService, private router: Router) {}
 
   ngOnInit(): void {
     this.loginForm.events.subscribe((e) => {
@@ -48,6 +49,7 @@ export class LoginComponent implements OnInit {
           )
           .subscribe((e) => {
             this.service.saveTokens(e);
+            this.router.navigateByUrl('/');
           });
       }
     });

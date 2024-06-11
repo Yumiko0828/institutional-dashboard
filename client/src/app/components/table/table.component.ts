@@ -1,10 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { TableRowComponent } from './table-row/table-row.component';
 
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [TableRowComponent],
+  imports: [],
   templateUrl: './table.component.html',
 })
 export class TableComponent {
