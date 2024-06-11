@@ -17,6 +17,14 @@ export class UsersService {
         email: true,
         permissionsLevel: true,
       },
+      orderBy: [
+        {
+          firstName: "asc",
+        },
+        {
+          lastName: "asc",
+        },
+      ],
     });
   }
 
