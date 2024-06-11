@@ -1,10 +1,9 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { SessionService } from '@services/session.service';
-import { EMPTY, concatMap } from 'rxjs';
+import { EMPTY } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log('****API INTERCEPTOR****');
   if (req.url.includes('/auth')) return next(req);
 
   const session = inject(SessionService);

@@ -1,13 +1,11 @@
 import {
   HttpErrorResponse,
-  HttpEvent,
   HttpInterceptorFn,
   HttpStatusCode,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import {
   EMPTY,
-  Observable,
   catchError,
   concatMap,
   filter,
@@ -23,41 +21,42 @@ export const authErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      console.log('****API ERROR INTERCEPTOR****');
+      // if StatusCode response is 401
       if (err.status === HttpStatusCode.Unauthorized) {
-        console.log('****INICIANDO REFRESH TOKEN****');
-
+        // Verify if refreshing process isn't started
         if (!session.isRefreshing) {
           session.isRefreshing = true;
 
           return session.refreshTokens().pipe(
             finalize(() => (session.isRefreshing = false)),
             concatMap((res) => {
+              // Update tokens
               session.saveTokens(res);
-              session.notifyTokenRefreshed(res.accessToken);
-              console.log('****TOKEN ACTUALIZADO****');
 
+              // Retry pending requests
+              session.notifyTokenRefreshed(res.accessToken);
               const clonedReq = session.addTokenHeader(req);
               return next(clonedReq);
             }),
             catchError(() => {
-              console.log('*******ERROR EN EL REFRESH TOKEN********');
+              // Error on refreshing
               session.signOut();
               return EMPTY;
             })
           );
         } else {
-          console.log('****REFRESH TOKEN EN PROCESO, SE PONE EN COLA****');
+          // Put in a queue to try again after refresh session
           return session.onTokenRefreshed().pipe(
             filter((token) => token !== null),
             take(1),
-            switchMap((token) => {
-              console.log('SEGUNDO INTENTO', token);
+            switchMap(() => {
               return next(session.addTokenHeader(req));
             })
           );
         }
       }
+
+      // Return error message
       return throwError(() =>
         Array.isArray(err.error.message)
           ? err.error.message[0]
