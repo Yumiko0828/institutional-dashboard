@@ -1,9 +1,9 @@
-<div class="bg-slate-950 w-full h-full flex justify-center items-center">
+<div class="bg-zinc-950 w-full h-full flex justify-center items-center">
   <form
     [formGroup]="loginForm"
-    class="bg-slate-700 w-full max-w-80 rounded-3xl p-3"
+    class="bg-zinc-700 w-full max-w-80 rounded-3xl p-3"
   >
-    <legend class="uppercase text-slate-50 text-2xl text-center mb-4">
+    <legend class="uppercase text-zinc-50 text-2xl text-center mb-4">
       Iniciar sesión
     </legend>
 
@@ -14,21 +14,21 @@
     }
 
     <fieldset class="flex flex-col gap-3 mb-5">
-      <label class="text-slate-50 flex flex-col gap-1">
+      <label class="text-zinc-50 flex flex-col gap-1">
         E-mail:
         <input
           type="email"
           formControlName="email"
-          class="px-2 py-1 rounded-lg bg-slate-800 outline-none text-slate-50 border-2 border-slate-800 transition-colors duration-300 hover:border-blue-200 focus:border-blue-400 disabled:cursor-not-allowed disabled:text-slate-400"
+          class="px-2 py-1 rounded-lg bg-zinc-800 outline-none outline-2 text-zinc-50 transition-all duration-300 hover:outline-blue-200 focus:outline-blue-400 disabled:cursor-not-allowed disabled:text-zinc-400"
           required
         />
       </label>
-      <label class="text-slate-50 flex flex-col gap-1">
+      <label class="text-zinc-50 flex flex-col gap-1">
         Contraseña:
         <input
           type="password"
           formControlName="password"
-          class="px-2 py-1 rounded-lg bg-slate-800 outline-none text-slate-50 border-2 border-slate-800 transition-colors duration-300 hover:border-blue-200 focus:border-blue-400 disabled:cursor-not-allowed disabled:text-slate-400"
+          class="px-2 py-1 rounded-lg bg-zinc-800 outline-none outline-2 text-zinc-50 transition-all duration-300 hover:outline-blue-200 focus:outline-blue-400 disabled:cursor-not-allowed disabled:text-zinc-400"
           required
         />
       </label>
