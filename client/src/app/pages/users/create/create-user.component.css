@@ -1,0 +1,19 @@
+fieldset {
+  @apply grid grid-cols-1 gap-2 xs:grid-cols-2;
+}
+
+fieldset > input,
+fieldset > select {
+  @apply px-3 py-2 rounded-xl bg-zinc-800 text-zinc-50 outline-none w-full;
+}
+
+fieldset > input:nth-child(1),
+fieldset > input:nth-child(2) {
+  @apply col-span-2 xs:col-span-1;
+}
+
+fieldset > input:nth-child(3),
+fieldset > select:nth-child(4),
+fieldset > input:nth-child(5) {
+  @apply col-span-2;
+}

@@ -5,6 +5,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { setLayout } from './core/resolvers/page-layout.resolver';
 import { PageLayout } from './core/enums/page-layout';
 import { UsersComponent } from './pages/users/users.component';
+import { CreateUserComponent } from './pages/users/create/create-user.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
     component: UsersComponent,
     title: 'Usuarios',
+    resolve: {
+      layout: setLayout(PageLayout.Dashboard),
+    },
+  },
+  {
+    path: 'users/create',
+    canActivate: [authGuard],
+    component: CreateUserComponent,
+    title: 'Registrar usuario',
     resolve: {
       layout: setLayout(PageLayout.Dashboard),
     },

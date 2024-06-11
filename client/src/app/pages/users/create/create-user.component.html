@@ -1,0 +1,58 @@
+<div class="wrapper">
+  <div class="w-full h-full flex justify-center items-center">
+    <form
+      [formGroup]="registerForm"
+      class="bg-zinc-900 w-full max-w-sm p-3 rounded-3xl"
+    >
+      <legend class="uppercase text-slate-50 text-2xl text-center mb-4">
+        Registrar usuario
+      </legend>
+
+      @if (errorMessage) {
+      <p class="px-2 py-3 rounded-xl bg-red-200 border-2 border-red-600 mb-4">
+        {{ errorMessage }}
+      </p>
+      }
+
+      <fieldset class="mb-3">
+        <input
+          type="text"
+          name=""
+          placeholder="Primer nombre"
+          formControlName="firstName"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Apellidos"
+          formControlName="lastName"
+          required
+        />
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          formControlName="email"
+          required
+        />
+        <select name="perms" formControlName="permissionsLevel" required>
+          <option value="0" [defaultSelected]="true">Invitado</option>
+          <option value="1">Profesor</option>
+          <option value="2">Administrador</option>
+        </select>
+        <input
+          type="password"
+          placeholder="Contraseña"
+          formControlName="password"
+          required
+        />
+      </fieldset>
+      <button
+        type="submit"
+        class="w-full px-3 py-2 rounded-xl bg-blue-400 transition-colors duration-300 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        [disabled]="disabled"
+      >
+        Aceptar
+      </button>
+    </form>
+  </div>
+</div>
