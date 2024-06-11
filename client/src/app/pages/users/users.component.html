@@ -1,4 +1,20 @@
 <div class="wrapper">
+  <div class="flex w-full justify-between mb-3">
+    @if (usersResults | async; as user) {
+    <h5 class="text-zinc-50 text-xl">Usuarios totales: {{ user.length }}</h5>
+    } @if (user$ | async; as user) { @if (user.permissionsLevel === 2) {
+
+    <button
+      type="button"
+      class="px-3 py-2 rounded-xl bg-purple-400 text-purple-950"
+      routerLink="/users/create"
+    >
+      Añadir
+    </button>
+    } }
+  </div>
+
+  <!-- table -->
   <div class="relative overflow-x-auto shadow-md rounded-lg">
     <app-table [columns]="cols">
       @for (user of usersResults | async; track $index) {
@@ -6,9 +22,36 @@
         <td>{{ $index + 1 }}</td>
         <td>{{ user.firstName }} {{ user.lastName }}</td>
         <td>{{ user.email }}</td>
-        <td>{{ getPermString(user.permissionsLevel) }}</td>
+        <td>
+          <span
+            class="py-1 px-2 rounded-lg bg-opacity-10 {{
+              user.permissionsLevel === 2
+                ? 'bg-red-400 text-red-50'
+                : user.permissionsLevel === 1
+                ? 'bg-green-400 text-green-50'
+                : 'bg-blue-400 text-blue-50'
+            }}"
+          >
+            {{ getPermString(user.permissionsLevel) }}
+          </span>
+        </td>
         @if (user.permissionsLevel === 2) {
-        <td>Opciones</td>
+        <td>
+          <div class="text-white rounded-xl overflow-hidden flex flex-nowrap">
+            <button
+              type="button"
+              class="bg-blue-500 px-3 py-2 transition-colors duration-300 hover:bg-blue-700"
+            >
+              Editar
+            </button>
+            <button
+              type="button"
+              class="bg-red-500 px-3 py-2 transition-colors duration-300 hover:bg-red-700"
+            >
+              Eliminar
+            </button>
+          </div>
+        </td>
         }
       </tr>
       }

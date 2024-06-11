@@ -8,7 +8,10 @@ import {
   featherX,
   featherLogOut,
 } from '@ng-icons/feather-icons';
-import { heroSquares2x2 } from '@ng-icons/heroicons/outline';
+import {
+  heroSquares2x2,
+  heroRectangleStack,
+} from '@ng-icons/heroicons/outline';
 import { UserResponse } from '@interfaces/api';
 import { UsersService } from '@services/users.service';
 import { url } from 'gravatar';
@@ -39,7 +42,7 @@ export class NavComponent implements OnInit {
     {
       label: 'Cursos',
       url: '/courses',
-      icon: featherList,
+      icon: heroRectangleStack,
     },
     {
       label: 'Grados',

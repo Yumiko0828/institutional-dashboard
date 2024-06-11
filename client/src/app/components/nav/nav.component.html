@@ -5,7 +5,7 @@
   <nav
     class="bg-zinc-900 absolute top-0 left-0 {{
       active ? 'translate-x-0' : '-translate-x-full'
-    }} w-full h-full max-w-xs z-50 flex flex-col overflow-x-hidden transition-transform duration-300 md:relative md:!translate-x-0 md:row-sidebar"
+    }} w-full h-full max-w-xs z-50 grid grid-cols-1 grid-rows-dashboard overflow-x-hidden transition-transform duration-300 md:relative md:!translate-x-0 md:row-sidebar"
   >
     <div class="flex justify-between items-center w-full px-3 py-2">
       <h5 class="text-slate-50 text-xl">Navegación</h5>
@@ -28,7 +28,9 @@
         <li class="py-1">
           <a
             [routerLink]="item.url"
-            [routerLinkActive]="'!bg-purple-400 bg-opacity-30 !text-purple-950 border-r-4 border-r-purple-400'"
+            [routerLinkActive]="
+              '!bg-purple-400 bg-opacity-30 !text-purple-950 border-r-4 border-r-purple-400'
+            "
             [routerLinkActiveOptions]="{ exact: true }"
             class="flex items-center gap-3 text-purple-100 p-3 cursor-default rounded-2xl transition-colors duration-300 hover:bg-purple-800 hover:bg-opacity-10"
             (click)="toggleActive()"
