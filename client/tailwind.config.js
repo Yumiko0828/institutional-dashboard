@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{html,ts}"],
   theme: {
     extend: {
+      screens: {
+        xs: "425px",
+      },
       gridTemplateColumns: {
         dashboard: "320px 1fr",
       },
