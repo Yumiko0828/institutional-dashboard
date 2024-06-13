@@ -1,13 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  EMPTY,
-  Observable,
-  Subject,
-  catchError,
-  combineLatest,
-  map,
-} from 'rxjs';
+import { EMPTY, catchError, combineLatest } from 'rxjs';
 import { TableComponent } from '@components/table/table.component';
 import { Perms } from '@enums/perms';
 import { UserResponse } from '@interfaces/api';
