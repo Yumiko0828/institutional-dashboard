@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  ForbiddenException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
@@ -42,7 +43,12 @@ export class AuthGuard implements CanActivate {
   }
 
   isValidHeader(header: string): boolean {
-    const headerRegEx = /[Bb]earer.[a-zA-Z0-9_-]*(\.[a-zA-Z0-9_-]*){2}/g;
-    return headerRegEx.test(header);
+    if (header.length >= 200)
+      throw new ForbiddenException("Header length is too long.");
+
+    const splitHeader = header.trim().split(" ");
+    if (splitHeader.length !== 2) return false;
+
+    return splitHeader[0].toLowerCase() === "bearer";
   }
 }
